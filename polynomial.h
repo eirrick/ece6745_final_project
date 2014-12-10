@@ -190,7 +190,7 @@ inline bool operator!=(const Polynomial& lhs, const Polynomial& rhs)
 }
 
 // Making the + operator usable for adding Polynomials
-Polynomial operator+(const Polynomial& lhs, const Polynomial& rhs)
+inline Polynomial operator+(const Polynomial& lhs, const Polynomial& rhs)
 {
     Polynomial result = lhs;
     for (unsigned long i=0;i<rhs.terms.size();++i)
@@ -199,7 +199,7 @@ Polynomial operator+(const Polynomial& lhs, const Polynomial& rhs)
     return result;
 }
 
-Polynomial operator+(const Polynomial& lhs, const Monomial& rhs)
+inline Polynomial operator+(const Polynomial& lhs, const Monomial& rhs)
 {
     Polynomial result = lhs;
     result.terms.push_back(rhs);
@@ -208,7 +208,7 @@ Polynomial operator+(const Polynomial& lhs, const Monomial& rhs)
 }
 
 // Making the - operator usable for subtracting Polynomials
-Polynomial operator-(const Polynomial& lhs, const Polynomial& rhs)
+inline Polynomial operator-(const Polynomial& lhs, const Polynomial& rhs)
 {
     // Add the new Polynomial as the negative version of all the terms
     Polynomial result = lhs;
@@ -218,7 +218,7 @@ Polynomial operator-(const Polynomial& lhs, const Polynomial& rhs)
     return result;
 }
 
-Polynomial operator-(const Polynomial& lhs, const Monomial& rhs)
+inline Polynomial operator-(const Polynomial& lhs, const Monomial& rhs)
 {
     Polynomial result = lhs;
     result.terms.push_back(-rhs);
@@ -227,7 +227,7 @@ Polynomial operator-(const Polynomial& lhs, const Monomial& rhs)
 }
 
 tuple<Polynomial,vector<Polynomial>> operator/(const Polynomial& f,
-        const Polynomial& divisor);
+        const vector<Polynomial>& divisor);
 
 Monomial operator/(const Monomial& dividend, const Monomial& divisor);
 

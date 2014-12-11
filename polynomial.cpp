@@ -24,7 +24,7 @@ Monomial::Monomial(string monom) :
     coefficient(1)
 {
     string sign = "-";
-    string coeff_pattern = "-?\\d+\\.?\\d*";
+    string coeff_pattern = "^-?\\d+\\.?\\d*";
     string var_exp_pattern = "([a-z])(\\d*)";
     regex r_coeff(coeff_pattern);
     regex r_var_exp(var_exp_pattern);
@@ -165,6 +165,7 @@ void Polynomial::simplify()
     return;
 }
 
+// Returns true if the Polynomials contain the same terms, false otherwise
 bool operator==(const Polynomial& lhs, const Polynomial& rhs)
 {
     if (lhs.terms.size()!=rhs.terms.size())
@@ -205,8 +206,12 @@ tuple<Polynomial,vector<Polynomial>> operator/(const Polynomial& f,
     return result;
 }
 
+// Two Monomials need to be divided to perform the multivariate division
+// algorithm, returns an empty Monomial if the division can't be performed
 Monomial operator/(const Monomial& dividend, const Monomial& divisor)
 {
+    if (divisor.vars.size()>dividend.vars.size())
+        return Monomial();
     Monomial result;
     unsigned long j = 0;
     for (unsigned long i=0;i<divisor.vars.size();++i) {
@@ -232,6 +237,8 @@ Monomial operator/(const Monomial& dividend, const Monomial& divisor)
                 var_exp quotient = dividend.vars[j];
                 result.vars.push_back(quotient);
                 ++j;
+                if (j==dividend.vars.size())
+                    return Monomial();
             } while (divisor.vars[i].var<dividend.vars[j].var);
         }
     }
@@ -239,6 +246,7 @@ Monomial operator/(const Monomial& dividend, const Monomial& divisor)
     return result;
 }
 
+// Multiplies a Monomial by a Polynomial
 Polynomial operator*(const Monomial& lhs, const Polynomial& rhs)
 {
     Polynomial result = rhs;
@@ -252,12 +260,19 @@ Polynomial operator*(const Monomial& lhs, const Polynomial& rhs)
             }
             else if (rhs.terms[i].vars[k].var<lhs.vars[j].var) {
                 var_exp ve = lhs.vars[j];
-                result.terms[i].vars.push_back(ve);
+                vector<var_exp>::iterator it = result.terms[i].vars.begin();
+                result.terms[i].vars.insert(it+static_cast<int>(k),ve);
                 ++j;
             }
             else {
                 do {
                     ++k;
+                    if (k==result.terms[i].vars.size()) {
+                        var_exp ve = lhs.vars[j];
+                        result.terms[i].vars.push_back(ve);
+                        ++j;
+                        break;
+                    }
                 } while (result.terms[i].vars[k].var>lhs.vars[j].var);
             }
         }

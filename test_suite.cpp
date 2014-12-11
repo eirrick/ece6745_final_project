@@ -109,3 +109,72 @@ TEST_CASE("Test simplify with just numbers")
     REQUIRE(p==Polynomial("6.753"));
 }
 
+TEST_CASE("Test monomial division")
+{
+    Monomial dividend("3xy2z3");
+    Monomial divisor("3xy2z3");
+    Monomial quotient = dividend/divisor;
+    REQUIRE(quotient==Monomial("1"));
+    dividend = Monomial("x2");
+    divisor = Monomial("x");
+    quotient = dividend/divisor;
+    REQUIRE(quotient==Monomial("x"));
+    dividend = Monomial("x2");
+    divisor = Monomial("x3");
+    quotient = dividend/divisor;
+    REQUIRE(quotient==Monomial());
+    dividend = Monomial("4x3y2z");
+    divisor = Monomial("2xyz");
+    quotient = dividend/divisor;
+    REQUIRE(quotient==Monomial("2x2y"));
+    divisor = Monomial("yxa");
+    dividend = Monomial("z");
+    REQUIRE((dividend/divisor)==Monomial());
+    divisor = Monomial("y");
+    dividend = Monomial("z");
+    REQUIRE((dividend/divisor)==Monomial());
+}
+
+TEST_CASE("Test monomial multiplied by floating point number")
+{
+    Monomial m("22x2y3");
+    Monomial result = m*2.2;
+    REQUIRE(result==Monomial("48.4x2y3"));
+}
+
+TEST_CASE("Test Monomial negation")
+{
+    Monomial m("-3.14x");
+    Monomial result = -m;
+    REQUIRE(result==Monomial("3.14x"));
+}
+
+TEST_CASE("Test has_same_vars")
+{
+    Monomial m1("31x2y5a9");
+    Monomial m2("-22x2y5a9");
+    Monomial m3("31xy5a9");
+    REQUIRE(has_same_vars(m1,m2)==true);
+    REQUIRE(has_same_vars(m1,m3)==false);
+}
+
+TEST_CASE("Test Polynomial addition")
+{
+    Polynomial p1("3x+4z2y-6ab2");
+    Polynomial p2("2x-4z+m-4zy+2ab2");
+    REQUIRE((p1+p2)==Polynomial("5x+4z2y-4z+m-4zy-4ab2"));
+}
+
+TEST_CASE("Test Polynomial/Monomial addition/multiplication")
+{
+    Polynomial p("3x2-y2+xyz");
+    Monomial m("3b");
+    Monomial m2("2y2");
+    REQUIRE((p+m)==Polynomial("3x2-y2+xyz+3b"));
+    REQUIRE((p+m2)==Polynomial("3x2+y2+xyz"));
+    REQUIRE((m*p)==Polynomial("9bx2-3by2+3bxyz"));
+    Polynomial p2 = m2*p;
+    bool b = p2==Polynomial("6x2y2-2y4+2xy3z");
+    REQUIRE(p2==Polynomial("6x2y2-2y4+2xy3z"));
+}
+

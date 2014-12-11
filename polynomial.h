@@ -58,6 +58,7 @@ class Monomial {
     public:
         vector<var_exp> vars; // Container for variable exponent pairs
 
+        // Construct an empty Monomial
         Monomial() :
             coefficient(0)
         {
@@ -93,6 +94,7 @@ class Monomial {
                 const Monomial& divisor);
         friend Monomial operator*(const Monomial& lhs, double coefficient);
 
+        // Returns the Monomial with a coefficient of opposite sign
         Monomial operator-() const
         {
             Monomial result = *this;
@@ -101,6 +103,7 @@ class Monomial {
         }
 };
 
+// Verifies that a two Monomials are the same except the coefficient
 inline bool has_same_vars(const Monomial& lhs, const Monomial& rhs)
 {
     Monomial templ = lhs;
@@ -112,6 +115,8 @@ inline bool has_same_vars(const Monomial& lhs, const Monomial& rhs)
 
 bool operator<(const Monomial& lhs, const Monomial& rhs);
 bool operator==(const Monomial& lhs, const Monomial& rhs);
+
+// Overload * to multiply a Monomial and a floating point number
 inline Monomial operator*(const Monomial& lhs, double coefficient)
 {
     Monomial result = lhs;
@@ -139,6 +144,7 @@ class Polynomial {
         void simplify();
 
     public:
+        // Constructs an empty Polynomial
         Polynomial()
         {
             terms = vector<Monomial>();
@@ -167,6 +173,7 @@ class Polynomial {
             return temp;
         }
 
+        // Gives the number of terms in a Polynomial
         unsigned long size() const
         {
             return terms.size();
@@ -199,6 +206,8 @@ inline Polynomial operator+(const Polynomial& lhs, const Polynomial& rhs)
     return result;
 }
 
+// In the multivariate division algorithm, Polynomials and Monomials need to
+// added together
 inline Polynomial operator+(const Polynomial& lhs, const Monomial& rhs)
 {
     Polynomial result = lhs;
@@ -218,6 +227,7 @@ inline Polynomial operator-(const Polynomial& lhs, const Polynomial& rhs)
     return result;
 }
 
+// Subtracts a Monomial from a Polynomial
 inline Polynomial operator-(const Polynomial& lhs, const Monomial& rhs)
 {
     Polynomial result = lhs;

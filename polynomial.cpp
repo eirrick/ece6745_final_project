@@ -154,10 +154,12 @@ void Polynomial::simplify()
     // same, then combine by adding or subtracting the coefficient.
     order_terms();
     unsigned int i = 0;
-    while (i<terms.size()-1) {
+    while (!terms.empty()&&i<terms.size()-1) {
         if (has_same_vars(terms[i],terms[i+1])) {
             terms[i].coefficient += terms[i+1].coefficient;
             terms.erase(terms.begin()+i+1);
+            if (double_compare(terms[i].coefficient,0))
+                terms.erase(terms.begin()+i);
         }
         else
             ++i;
@@ -214,10 +216,11 @@ Monomial operator/(const Monomial& dividend, const Monomial& divisor)
         return Monomial();
     Monomial result;
     unsigned long j = 0;
-    for (unsigned long i=0;i<divisor.vars.size();++i) {
+    for (unsigned long i=0;i<divisor.vars.size();) {
         if (divisor.vars[i].var==dividend.vars[j].var) {
             if (dividend.vars[j].exponent==divisor.vars[i].exponent) {
                 ++j;
+                ++i;
             }
             else if (dividend.vars[j].exponent>divisor.vars[i].exponent) {
                 var_exp quotient;
@@ -226,6 +229,7 @@ Monomial operator/(const Monomial& dividend, const Monomial& divisor)
                     -divisor.vars[i].exponent;
                 result.vars.push_back(quotient);
                 ++j;
+                ++i;
             }
             else
                 return Monomial();

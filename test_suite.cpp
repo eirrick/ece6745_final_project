@@ -7,6 +7,7 @@
 
 using std::cout;
 using std::endl;
+using std::get;
 
 TEST_CASE("Test Monomial")
 {
@@ -78,6 +79,7 @@ TEST_CASE("Test Polynomial 1")
     Polynomial p("2x2yz+3xy3-2x3");
     REQUIRE(p.get_leading_term()==Monomial("3xy3"));
     REQUIRE(double_compare(p.get_leading_coefficient(),3)==true);
+    REQUIRE(p.get_leading_monom()==Monomial("xy3"));
 }
 
 TEST_CASE("Test Polynomial 2")
@@ -85,6 +87,7 @@ TEST_CASE("Test Polynomial 2")
     Polynomial p("3v5e2a8-2x16");
     REQUIRE(p.get_leading_term()==Monomial("-2x16"));
     REQUIRE(double_compare(p.get_leading_coefficient(),-2)==true);
+    REQUIRE(p.get_leading_monom()==Monomial("x16"));
 }
 
 TEST_CASE("Test simplify()")
@@ -133,6 +136,9 @@ TEST_CASE("Test monomial division")
     divisor = Monomial("y");
     dividend = Monomial("z");
     REQUIRE((dividend/divisor)==Monomial());
+    divisor = Monomial("x2y");
+    dividend = Monomial("-x2z");
+    REQUIRE((dividend/divisor)==Monomial());
 }
 
 TEST_CASE("Test monomial multiplied by floating point number")
@@ -176,5 +182,16 @@ TEST_CASE("Test Polynomial/Monomial addition/multiplication")
     Polynomial p2 = m2*p;
     bool b = p2==Polynomial("6x2y2-2y4+2xy3z");
     REQUIRE(p2==Polynomial("6x2y2-2y4+2xy3z"));
+}
+
+TEST_CASE("Multivariate division")
+{
+    Polynomial f("x3-x2y-x2z+x");
+    Polynomial f1("x2y-z");
+    Polynomial f2("xy-1");
+    vector<Polynomial> v({f1,f2});
+    auto result = f/v;
+    REQUIRE(get<0>(result)==Polynomial("x3-x2z+x-z"));
+    REQUIRE(get<1>(result)[0]==Polynomial("-1"));
 }
 

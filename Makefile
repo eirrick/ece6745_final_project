@@ -15,6 +15,9 @@ LIBS =
 LFLAGS = -Wl,-rpath=$(LDIR)
 DEPS = polynomial.h
 TARGET = test_suite
+TARGET_LIB = libpoly.a
+AR = ar
+AR_FLAGS = -rvc
 
 _OBJ = test_suite.o polynomial.o 
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
@@ -26,8 +29,12 @@ $(TARGET): $(OBJ)
 	$(CC) -o $@ $^ $(LFLAGS)
 	ctags -R
 
-.PHONY: clean
+$(TARGET_LIB): CFLAGS += -static-libstdc++
+$(TARGET_LIB): $(ODIR)/polynomial.o
+	$(AR) $(AR_FLAGS) $@ $^
 
+.PHONY: clean
+	
 clean:
-	rm -f $(ODIR)/*.o core $(TARGET) tags
+	rm -f $(ODIR)/*.o core $(TARGET) tags $(TARGET_LIB)
 

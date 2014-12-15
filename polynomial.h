@@ -251,5 +251,7 @@ inline bool double_compare(const double a, const double b)
 
 Polynomial operator*(const Monomial& lhs, const Polynomial& rhs);
 
+Monomial lcm(const Monomial& m1, const Monomial& m2);
+
 #endif
 

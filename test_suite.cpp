@@ -195,3 +195,19 @@ TEST_CASE("Multivariate division")
     REQUIRE(get<1>(result)[0]==Polynomial("-1"));
 }
 
+TEST_CASE("Test lcm")
+{
+    Monomial m1("31.45x2yz");
+    Monomial m2("22a2b2c2xy");
+    REQUIRE(lcm(m1,m2)==Monomial("a2b2c2x2yz"));
+    m1 = Monomial("3a2");
+    m2 = Monomial("z54");
+    REQUIRE(lcm(m1,m2)==Monomial("a2z54"));
+    m1 = Monomial("m");
+    m2 = Monomial("m");
+    REQUIRE(lcm(m1,m2)==Monomial("m"));
+    m1 = Monomial("m3");
+    m2 = Monomial("m2");
+    REQUIRE(lcm(m1,m2)==Monomial("m3"));
+}
+

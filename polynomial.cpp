@@ -146,7 +146,6 @@ bool operator==(const Monomial& lhs, const Monomial& rhs)
     }
 }
 
-
 // A function that will combine combinable terms in the Polynomial
 void Polynomial::simplify()
 {
@@ -281,6 +280,48 @@ Polynomial operator*(const Monomial& lhs, const Polynomial& rhs)
             }
         }
         result.terms[i] = result.terms[i]*lhs.get_coefficient();
+    }
+    return result;
+}
+
+// Finds the least common multiple of two Monomials
+Monomial lcm(const Monomial& m1, const Monomial& m2)
+{
+    Monomial result("1");
+    unsigned long max_size = m1.vars.size()+m2.vars.size();
+    unsigned long m1_index = 0;
+    unsigned long m2_index = 0;
+    for (unsigned long count=0;count<max_size;++count) {
+        if (m1_index==m1.vars.size()) {
+            for (;m2_index<m2.vars.size();++m2_index)
+                result.vars.push_back(m2.vars[m2_index]);
+            break;
+        }
+        if (m2_index==m2.vars.size()) {
+            for (;m1_index<m1.vars.size();++m1_index)
+                result.vars.push_back(m1.vars[m1_index]);
+            break;
+        }
+        if (m1.vars[m1_index].var==m2.vars[m2_index].var) {
+            var_exp ve;
+            ve.var = m1.vars[m1_index].var;
+            if (m1.vars[m1_index].exponent>m2.vars[m2_index].exponent)
+                ve.exponent = m1.vars[m1_index].exponent;
+            else
+                ve.exponent = m2.vars[m2_index].exponent;
+            result.vars.push_back(ve);
+            ++m1_index;
+            ++m2_index;
+            ++count;
+        }
+        else if (m1.vars[m1_index].var<m2.vars[m2_index].var) {
+            result.vars.push_back(m2.vars[m2_index]);
+            ++m2_index;
+        }
+        else {
+            result.vars.push_back(m1.vars[m1_index]);
+            ++m1_index;
+        }
     }
     return result;
 }

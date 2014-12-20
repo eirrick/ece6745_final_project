@@ -151,6 +151,10 @@ class Polynomial {
         }
 
         Polynomial(string s);
+        Polynomial(Monomial m)
+        {
+            terms.push_back(m);
+        }
 
         // Returns the leading term
         Monomial get_leading_term() const
@@ -178,6 +182,15 @@ class Polynomial {
         {
             return terms.size();
         }
+
+        bool contains(Monomial m)
+        {
+            for (unsigned long i=0;i<size();++i) {
+                if (terms[i]==m)
+                    return true;
+            }
+            return false;
+        }
         
         friend Polynomial operator+(const Polynomial& lhs,
                 const Polynomial& rhs);
@@ -187,7 +200,23 @@ class Polynomial {
         friend Polynomial operator-(const Polynomial& lhs, const Monomial& rhs);
         friend Polynomial operator+(const Polynomial& lhs, const Monomial& rhs);
         friend Polynomial operator*(const Monomial& lhs, const Polynomial& rhs);
+        friend vector<Polynomial> getMonomialsFromList(vector<Polynomial> F);
+        friend Polynomial operator*(const Polynomial& lhs,
+                const Polynomial& rhs);
 };
+
+Polynomial operator*(const Polynomial& lhs, const Polynomial& rhs)
+{
+    Polynomial result;
+    for (unsigned long i=0;i<rhs.size();++i) {
+        Polynomial temp = lhs*rhs.terms[i];
+        for (unsigned long j=0;j<temp.size();++j) {
+            result.terms.push_back(temp.terms[i]);
+        }
+    }
+    result.simplify();
+    return result;
+}
 
 bool operator==(const Polynomial& lhs, const Polynomial& rhs);
 
